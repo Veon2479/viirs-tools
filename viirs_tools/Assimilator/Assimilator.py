@@ -113,7 +113,7 @@ def assimilate(
         while (cur_d >= start_d):
             cur_d_s = cur_d.strftime('%Y-%m-%d')
             next_d_s = next_d.strftime('%Y-%m-%d')
-            step_path = os.path.join(path, f'{cur_d_s}_{next_d_s}')
+            step_path = os.path.join(path, f'{cur_d_s}')
 
             _get_data_for_interval(
                 step_path,

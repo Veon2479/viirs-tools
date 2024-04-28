@@ -16,7 +16,7 @@ To install `viirs-tools`, you can use pip:
  pip install viirs-tools 
 ```
 
-If you want to use the `Assimilation` extra module, which allows you to download data from NASA servers:
+If you want to use the `Assimilator` extra module, which allows you to download data from NASA servers:
 ``` 
 pip install viirs-tools[assimilator]
  ```
@@ -30,7 +30,7 @@ The `viirs-tools` library provides the following core modules and their main fun
 1. **CloudMask**:
    + `rsnpp_day_img`: Day reflectance/thermal I-bands cloud test. [^1]
    + `thermal_img`: Night thermal I-bands cloud test. [^2]
-   + day_night_img: Day/night cloud mask based on the previous 2
+   + `day_night_img`: Day/night cloud mask based on the previous 2
 
 
 2. **NightMask**:

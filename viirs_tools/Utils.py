@@ -1,5 +1,6 @@
 import xarray as xr
 import numpy as np
+import math
 
 # Internal functions:
 
@@ -100,3 +101,21 @@ def not_nan_mask(data):
         raise ValueError(
             "Input data is not array (built-in, np or xr) object"
         )
+
+
+def merge_masks(day_cm, night_cm, nm):
+    """
+        Merge day and night cloud masks
+    Args:
+        day_cm(list|np.ndarray|xr.DataArray):
+            day cloud mask
+        night_cm(list|np.ndarray|xr.DataArray):
+            night cloud mask
+        nm(list|np.ndarray|xr.DataArray):
+            binary night mask
+    Returns:
+        (list|np.ndarray|xr.DataArray):
+            merged cloud mask
+    """
+    mask = xr.where(nm == 0, day_cm, night_cm)
+    return mask
