@@ -29,8 +29,7 @@ The `viirs-tools` library provides the following core modules and their main fun
 
 1. **CloudMask**:
    + `rsnpp_day_img`: Day reflectance/thermal I-bands cloud test. [^1]
-   + `thermal_img`: Night thermal I-bands cloud test. [^2]
-   + `day_night_img`: Day/night cloud mask based on the previous 2
+   + `fire_day_img`, `fire_night_img`: Day and night I-bands cloud tests used in the [^2].
 
 
 2. **NightMask**:
