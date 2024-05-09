@@ -1,5 +1,5 @@
 import xarray as xr
-import math
+from math import nan
 
 from . import Utils
 
@@ -46,7 +46,7 @@ def _rsnpp_day_img(ri1, ri2, ri3, bi4, bi5, nmask):
     cm = xr.where(cm & t5, 0, 1)
     cm = xr.where(cm & t6, 0, 1)
 
-    cm = xr.where(nmask == 0, cm, math.nan)
+    cm = xr.where(nmask == 0, cm, nan)
 
     return cm
 
@@ -80,7 +80,7 @@ def _fire_day_img(ri1, ri2, bi5, nmask):
     cm = xr.where(t2 == 0, 0, cm)
     cm = xr.where(t3 == 0, 0, cm)
 
-    cm = xr.where(nmask == 0, cm, math.nan)
+    cm = xr.where(nmask == 0, cm, nan)
     return cm
 
 
@@ -101,9 +101,9 @@ def _fire_night_img(bi4, bi5, nmask):
     """
     cm = xr.where(bi4 < 265, 0, 1)
     cm = xr.where(bi5 < 295, cm, 0)
-    cm = xr.where(Utils.not_nan_mask(bi4), cm, math.nan)
+    cm = xr.where(Utils.not_nan_mask(bi4), cm, nan)
 
-    cm = xr.where(nmask == 1, cm, math.nan)
+    cm = xr.where(nmask == 1, cm, nan)
 
     return cm
 

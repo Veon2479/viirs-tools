@@ -1,6 +1,5 @@
 import xarray as xr
 import numpy as np
-import math
 
 # Internal functions:
 
@@ -66,6 +65,32 @@ def max_values(data):
             data_max = data.max(dim=dims)
         else:
             data_max = data.max(dim=dims).item()
+    return data_max
+
+
+def median_values(data):
+    """
+        Single function for finding
+        median values per time slice
+        for various data forms
+    Args:
+        data (list|np.ndarray|xr.DataArray):
+            slice or set of slices for searching for max values
+    Returns
+        (xr.DataArray|dtype of data vales):
+            median value for given slice or xr.Datarray of such values
+            with time dimension
+    """
+    if isinstance(data, (list, np.ndarray)):
+        return np.nanmedian(data)
+    else:
+        dims = list(data.dims)
+        data_max = None
+        if 'time' in dims:
+            dims.pop(dims.index('time'))
+            data_max = data.median(dim=dims)
+        else:
+            data_max = data.median(dim=dims).item()
     return data_max
 
 
