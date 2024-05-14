@@ -144,3 +144,15 @@ def merge_masks(day_cm, night_cm, nm):
     """
     mask = xr.where(nm == 0, day_cm, night_cm)
     return mask
+
+
+def ndvi(NIR, R):
+    """
+        Get NDVI index from reflectance bands
+    Args:
+        NIR(np.ndarray|xr.DataArray): near-infrared band
+        R(np.ndarray|xr.DataArray): red band
+    Returns:
+        (np.ndarray|xr.DataArray): NDVI index for each pixel
+    """
+    return (NIR - R) / (NIR + R)

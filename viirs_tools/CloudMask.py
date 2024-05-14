@@ -205,10 +205,6 @@ def rsnpp_day_img_ds(ds, nmask):
         raise ValueError(
             "Incorrect input data format"
         )
-    if not isinstance(nmask, xr.DataArray):
-        raise ValueError(
-            "Incorrect input data format"
-        )
     return rsnpp_day_img(
         ds['I01'],
         ds['I02'],
