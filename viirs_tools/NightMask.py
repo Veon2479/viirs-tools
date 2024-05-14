@@ -13,12 +13,12 @@ def naive(refband, btband):
         Assumed that data was loaded in the reflectance or
             brightness-temperature, not radiance calibration
     Args:
-        refband (list|np.ndarray|xr.DataArray):
+        refband (np.ndarray|xr.DataArray):
             any reflectance data
-        btband (list|np.ndarray|xr.DataArray):
+        btband (np.ndarray|xr.DataArray):
             any brightness-temperature data
     Returns:
-        (list|np.ndarray|xr.DataArray): integer mask,
+        (np.ndarray|xr.DataArray): integer mask,
             1 means night state, 0 means day state,
             Can contain NaN values in case of missing data in BT band
     """

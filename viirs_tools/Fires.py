@@ -6,23 +6,24 @@ from . import Utils
 
 # Internal functions
 
-def _active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask):
+def _active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask=None):
     """
         Fire mask from actives fire VIIRS product
         Based on the W.Schroeder, P.Oliva, L.Giglio, I.A.Csiszar (2014).
         The New VIIRS 375 m active fire detection data product:
             Algorithm description and initial assessment
     Args:
-        ri1 (list|np.ndarray|xr.Dataset): I01 in reflectance calibration
-        ri2 (list|np.ndarray|xr.Dataset): I02 in reflectance calibration
-        ri3 (list|np.ndarray|xr.Dataset): I03 in reflectance calibration
-        bi4 (list|np.ndarray|xr.Dataset): I04 in BT calibration
-        bi5 (list|np.ndarray|xr.Dataset): I05 in BT calibration
-        nmask (list|np.ndarray|xr.Dataset): Day/night mask (1 is night)
-        cmask (list|np.ndarray|xr.Dataset): Cloud mask (1 is clear pixel)
-        wmask (list|np.ndarray|xr.Dataset): water bodies mask (1 is water body)
+        ri1 (np.ndarray|xr.Dataset): I01 in reflectance calibration
+        ri2 (np.ndarray|xr.Dataset): I02 in reflectance calibration
+        ri3 (np.ndarray|xr.Dataset): I03 in reflectance calibration
+        bi4 (np.ndarray|xr.Dataset): I04 in BT calibration
+        bi5 (np.ndarray|xr.Dataset): I05 in BT calibration
+        nmask (np.ndarray|xr.Dataset): Day/night mask (1 is night)
+        cmask (np.ndarray|xr.Dataset): Cloud mask (1 is clear pixel)
+        wmask (np.ndarray|xr.Dataset, optional): water bodies mask,
+            (1 is water body)
     Returns:
-        (list|np.ndarray|xr.Dataset): binary fire mask,
+        (np.ndarray|xr.Dataset): binary fire mask,
             0 is clear pixel, 1 is fire
             Can contain NaN values
     """
@@ -91,30 +92,32 @@ def _active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask):
     mask = xr.where(nmask == 1, nt, nan)
     mask = xr.where(nmask == 0, dt, mask)
     mask = xr.where(cmask == 0, nan, mask)
-    mask = xr.where(wmask == 0, nan, mask)
+    if wmask is not None:
+        mask = xr.where(wmask == 0, nan, mask)
     return mask
 
 
 # Public wrappers:
 
 
-def active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask):
+def active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask=None):
     """
         Fire mask from actives fire VIIRS product
         Based on the W.Schroeder, P.Oliva, L.Giglio, I.A.Csiszar (2014).
         The New VIIRS 375 m active fire detection data product:
             Algorithm description and initial assessment
     Args:
-        ri1 (list|np.ndarray|xr.Dataset): I01 in reflectance calibration
-        ri2 (list|np.ndarray|xr.Dataset): I02 in reflectance calibration
-        ri3 (list|np.ndarray|xr.Dataset): I03 in reflectance calibration
-        bi4 (list|np.ndarray|xr.Dataset): I04 in BT calibration
-        bi5 (list|np.ndarray|xr.Dataset): I05 in BT calibration
-        nmask (list|np.ndarray|xr.Dataset): Day/night mask (1 is night)
-        cmask (list|np.ndarray|xr.Dataset): Cloud mask (1 is clear pixel)
-        wmask (list|np.ndarray|xr.Dataset): water bodies mask (1 is water body)
+        ri1 (np.ndarray|xr.Dataset): I01 in reflectance calibration
+        ri2 (np.ndarray|xr.Dataset): I02 in reflectance calibration
+        ri3 (np.ndarray|xr.Dataset): I03 in reflectance calibration
+        bi4 (np.ndarray|xr.Dataset): I04 in BT calibration
+        bi5 (np.ndarray|xr.Dataset): I05 in BT calibration
+        nmask (np.ndarray|xr.Dataset): Day/night mask (1 is night)
+        cmask (np.ndarray|xr.Dataset): Cloud mask (1 is clear pixel)
+        wmask (np.ndarray|xr.Dataset, optional): water bodies mask,
+            (1 is water body)
     Returns:
-        (list|np.ndarray|xr.Dataset): binary fire mask,
+        (np.ndarray|xr.Dataset): binary fire mask,
             0 is clear pixel, 1 is fire
             Can contain NaN values
     """
@@ -125,6 +128,8 @@ def active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask):
     Utils._check_data(bi5)
     Utils._check_data(nmask)
     Utils._check_data(cmask)
+    if wmask is not None:
+        Utils._check_data(wmask)
     return _active_fires(
         ri1, ri2, ri3,
         bi4, bi5,
@@ -135,7 +140,7 @@ def active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask):
 # Public xr.Dataset wrappers:
 
 
-def active_fires_ds(ds, nmask, cmask, wmask):
+def active_fires_ds(ds, nmask, cmask, wmask=None):
     """
         Wrapper for fire mask from actives fire VIIRS product
             for xr.Dataset objects
@@ -143,16 +148,17 @@ def active_fires_ds(ds, nmask, cmask, wmask):
         The New VIIRS 375 m active fire detection data product:
             Algorithm description and initial assessment
     Args:
-        ri1 (list|np.ndarray|xr.Dataset): I01 in reflectance calibration
-        ri2 (list|np.ndarray|xr.Dataset): I02 in reflectance calibration
-        ri3 (list|np.ndarray|xr.Dataset): I03 in reflectance calibration
-        bi4 (list|np.ndarray|xr.Dataset): I04 in BT calibration
-        bi5 (list|np.ndarray|xr.Dataset): I05 in BT calibration
-        nmask (list|np.ndarray|xr.Dataset): Day/night mask (1 is night)
-        cmask (list|np.ndarray|xr.Dataset): Cloud mask (1 is clear pixel)
-        wmask (list|np.ndarray|xr.Dataset): water bodies mask (1 is water body)
+        ri1 (np.ndarray|xr.Dataset): I01 in reflectance calibration
+        ri2 (np.ndarray|xr.Dataset): I02 in reflectance calibration
+        ri3 (np.ndarray|xr.Dataset): I03 in reflectance calibration
+        bi4 (np.ndarray|xr.Dataset): I04 in BT calibration
+        bi5 (np.ndarray|xr.Dataset): I05 in BT calibration
+        nmask (np.ndarray|xr.Dataset): Day/night mask (1 is night)
+        cmask (np.ndarray|xr.Dataset): Cloud mask (1 is clear pixel)
+        wmask (np.ndarray|xr.Dataset, optional): water bodies mask,
+            (1 is water body)
     Returns:
-        (list|np.ndarray|xr.Dataset): binary fire mask,
+        (np.ndarray|xr.Dataset): binary fire mask,
             0 is clear pixel, 1 is fire
             Can contain NaN values
     """
@@ -166,5 +172,6 @@ def active_fires_ds(ds, nmask, cmask, wmask):
         ds['I03'],
         ds['I04'],
         ds['I05'],
-        nmask, cmask, wmask
+        nmask, cmask,
+        wmask=wmask
     )
