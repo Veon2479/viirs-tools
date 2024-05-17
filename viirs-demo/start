@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source  ~/.conda.bashrc
+conda activate tf
+python ./viirs-demo.py

@@ -8,14 +8,16 @@ from . import Utils
 # Internal functions:
 
 
-def _mono_window(bm15, ndvi, cmask=None):
+def _mono_window(bt, band_lambda, ndvi, cmask=None):
     """
         LST retrieval algorithm for day conditions
         Based on the U.Adam, G.Jovanoska (2016).
         Algorithm for Automated Mapping of
             Land Surface Temperature Using LANDSAT 8 Satellite Data
     Args:
-        bm15: (np.ndarray|xr.Dataset): M15 in BT calibration
+        bt: (np.ndarray|xr.Dataset): band at ~10-12 um in BT calibration
+        band_lambda: (float) wavelength of emitted radiance in used band
+            (the peak response or average of the limiting wavelength)
         ndvi: (np.ndarray|xr.Dataset): NDVI in corresponding resolution
         cmask: (np.ndarray|xr.Dataset, optional): integer cloud mask,
             1 is clear sky pixel
@@ -23,7 +25,7 @@ def _mono_window(bm15, ndvi, cmask=None):
         (np.ndarray, xr.Dataset): array containing LST,
             Can contain NaN values
     """
-    bm15 -= 273.15  # to Celsius
+    bt -= 273.15  # to Celsius
 
     ndvi_s = 0.2
     ndvi_v = 0.5
@@ -41,18 +43,98 @@ def _mono_window(bm15, ndvi, cmask=None):
     e_l = xr.where(ndvi > ndvi_v, e_v, e_l)
 
     p = 1.438e-2
-    band_lambda = 10.76  # avg for m15 range (10.26 - 11.26 um)
 
-    lst = bm15 / (1 + (band_lambda*bm15/p) * np.log(e_l))
+    lst = bt / (1 + (band_lambda*bt/p) * np.log(e_l))
     if cmask is not None:
         lst = xr.where(cmask == 1, lst, nan)
     return lst
 
 
+# Private wrappers
+
+def _mono_window_i05(bi05, ndvi, cmask=None):
+    """
+        LST retrieval algorithm for day conditions
+        Based on the U.Adam, G.Jovanoska (2016).
+        Algorithm for Automated Mapping of
+            Land Surface Temperature Using LANDSAT 8 Satellite Data
+    Args:
+        bi05: (np.ndarray|xr.Dataset): I05 in BT calibration
+        ndvi: (np.ndarray|xr.Dataset): NDVI in corresponding resolution
+        cmask: (np.ndarray|xr.Dataset, optional): integer cloud mask,
+            1 is clear sky pixel
+    Returns:
+        (np.ndarray, xr.Dataset): array containing LST,
+            Can contain NaN values
+    """
+    return _mono_window(bi05, (10.5+12.4)/2, ndvi, cmask=cmask)
+
+
+def _mono_window_m15(bm15, ndvi, cmask=None):
+    """
+        LST retrieval algorithm for day conditions
+        Based on the U.Adam, G.Jovanoska (2016).
+        Algorithm for Automated Mapping of
+            Land Surface Temperature Using LANDSAT 8 Satellite Data
+    Args:
+        bm15: (np.ndarray|xr.Dataset): M15 in BT calibration
+        ndvi: (np.ndarray|xr.Dataset): NDVI in corresponding resolution
+        cmask: (np.ndarray|xr.Dataset, optional): integer cloud mask,
+            1 is clear sky pixel
+    Returns:
+        (np.ndarray, xr.Dataset): array containing LST,
+            Can contain NaN values
+    """
+    return _mono_window(bm15, (10.263+11.263)/2, ndvi, cmask=cmask)
+
+
+def _mono_window_m16(bm16, ndvi, cmask=None):
+    """
+        LST retrieval algorithm for day conditions
+        Based on the U.Adam, G.Jovanoska (2016).
+        Algorithm for Automated Mapping of
+            Land Surface Temperature Using LANDSAT 8 Satellite Data
+    Args:
+        bm16: (np.ndarray|xr.Dataset): M16 in BT calibration
+        ndvi: (np.ndarray|xr.Dataset): NDVI in corresponding resolution
+        cmask: (np.ndarray|xr.Dataset, optional): integer cloud mask,
+            1 is clear sky pixel
+    Returns:
+        (np.ndarray, xr.Dataset): array containing LST,
+            Can contain NaN values
+    """
+    return _mono_window(bm16, (11.538+12.488)/2, ndvi, cmask=cmask)
+
+
 # Public wrappers:
 
 
-def mono_window(bm15, ndvi, cmask=None):
+def mono_window_i05(bi05, ndvi, cmask=None):
+    """
+        LST retrieval algorithm for day conditions
+        Based on the U.Adam, G.Jovanoska (2016).
+        Algorithm for Automated Mapping of
+            Land Surface Temperature Using LANDSAT 8 Satellite Data
+    Args:
+        bi05: (np.ndarray|xr.Dataset): I05 in BT calibration
+        ndvi: (np.ndarray|xr.Dataset): NDVI in corresponding resolution
+        cmask: (np.ndarray|xr.Dataset, optional): integer cloud mask,
+            1 is clear sky pixel
+    Returns:
+        (np.ndarray, xr.Dataset): array containing LST,
+            Can contain NaN values
+    """
+    Utils._check_data(bi05)
+    Utils._check_data(ndvi)
+    if cmask is not None:
+        Utils._check_data(cmask)
+    return _mono_window_i05(
+        bi05, ndvi,
+        cmask=cmask
+    )
+
+
+def mono_window_m15(bm15, ndvi, cmask=None):
     """
         LST retrieval algorithm for day conditions
         Based on the U.Adam, G.Jovanoska (2016).
@@ -71,8 +153,33 @@ def mono_window(bm15, ndvi, cmask=None):
     Utils._check_data(ndvi)
     if cmask is not None:
         Utils._check_data(cmask)
-    return _mono_window(
+    return _mono_window_m15(
         bm15, ndvi,
+        cmask=cmask
+    )
+
+
+def mono_window_m16(bm16, ndvi, cmask=None):
+    """
+        LST retrieval algorithm for day conditions
+        Based on the U.Adam, G.Jovanoska (2016).
+        Algorithm for Automated Mapping of
+            Land Surface Temperature Using LANDSAT 8 Satellite Data
+    Args:
+        bm15: (np.ndarray|xr.Dataset): M16 in BT calibration
+        ndvi: (np.ndarray|xr.Dataset): NDVI in corresponding resolution
+        cmask: (np.ndarray|xr.Dataset, optional): integer cloud mask,
+            1 is clear sky pixel
+    Returns:
+        (np.ndarray, xr.Dataset): array containing LST,
+            Can contain NaN values
+    """
+    Utils._check_data(bm16)
+    Utils._check_data(ndvi)
+    if cmask is not None:
+        Utils._check_data(cmask)
+    return _mono_window_m16(
+        bm16, ndvi,
         cmask=cmask
     )
 
@@ -80,7 +187,32 @@ def mono_window(bm15, ndvi, cmask=None):
 # Public xr.Dataset wrappers:
 
 
-def mono_window_ds(ds, ndvi, cmask=None):
+def mono_window_i05_ds(ds, ndvi, cmask=None):
+    """
+        Wrapper for LST retrieval algorithm for day conditions
+        Based on the U.Adam, G.Jovanoska (2016).
+        Algorithm for Automated Mapping of
+            Land Surface Temperature Using LANDSAT 8 Satellite Data
+    Args:
+        ds (xr.Dataset): dataset with I05 band data
+        ndvi: (np.ndarray|xr.Dataset): NDVI in corresponding resolution
+        cmask: (np.ndarray|xr.Dataset, optional): integer cloud mask,
+            1 is clear sky pixel
+    Returns:
+        (np.ndarray, xr.Dataset): array containing LST,
+            Can contain NaN values
+    """
+    if not isinstance(ds, xr.Dataset):
+        raise ValueError(
+            "Incorrect input data format"
+        )
+    return mono_window_i05(
+        ds['I01'], ndvi,
+        cmask=cmask
+    )
+
+
+def mono_window_m15_ds(ds, ndvi, cmask=None):
     """
         Wrapper for LST retrieval algorithm for day conditions
         Based on the U.Adam, G.Jovanoska (2016).
@@ -99,7 +231,32 @@ def mono_window_ds(ds, ndvi, cmask=None):
         raise ValueError(
             "Incorrect input data format"
         )
-    return mono_window(
+    return mono_window_m15(
         ds['M15'], ndvi,
+        cmask=cmask
+    )
+
+
+def mono_window_m16_ds(ds, ndvi, cmask=None):
+    """
+        Wrapper for LST retrieval algorithm for day conditions
+        Based on the U.Adam, G.Jovanoska (2016).
+        Algorithm for Automated Mapping of
+            Land Surface Temperature Using LANDSAT 8 Satellite Data
+    Args:
+        ds (xr.Dataset): dataset with M16 band data
+        ndvi: (np.ndarray|xr.Dataset): NDVI in corresponding resolution
+        cmask: (np.ndarray|xr.Dataset, optional): integer cloud mask,
+            1 is clear sky pixel
+    Returns:
+        (np.ndarray, xr.Dataset): array containing LST,
+            Can contain NaN values
+    """
+    if not isinstance(ds, xr.Dataset):
+        raise ValueError(
+            "Incorrect input data format"
+        )
+    return mono_window_m16(
+        ds['M16'], ndvi,
         cmask=cmask
     )

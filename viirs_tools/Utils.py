@@ -1,5 +1,6 @@
 import xarray as xr
 import numpy as np
+from math import nan
 
 # Internal functions:
 
@@ -135,21 +136,21 @@ def not_nan_mask(data):
         )
 
 
-def merge_masks(day_cm, night_cm, nm):
+def merge_day_night(day, night, nm):
     """
-        Merge day and night cloud masks
+        Merge day and night composits
     Args:
         day_cm(np.ndarray|xr.DataArray):
-            day cloud mask
+            day composit
         night_cm(np.ndarray|xr.DataArray):
-            night cloud mask
+            night composit
         nm(np.ndarray|xr.DataArray):
             binary night mask
     Returns:
         (np.ndarray|xr.DataArray):
-            merged cloud mask
+            merged composit
     """
-    mask = xr.where(nm == 0, day_cm, night_cm)
+    mask = xr.where(nm == 0, day, night)
     return mask
 
 
@@ -161,6 +162,9 @@ def ndvi(NIR, R):
         NIR(np.ndarray|xr.DataArray): near-infrared reflectance band
         R(np.ndarray|xr.DataArray): red reflectance band
     Returns:
-        (np.ndarray|xr.DataArray): NDVI index for each pixel
+        (np.ndarray|xr.DataArray): NDVI index for each pixel,
+            can contain NaN values
     """
-    return (NIR - R) / (NIR + R)
+    i = (NIR - R) / (NIR + R)
+    mask = nan_mask(NIR)
+    return xr.where(mask, nan, i)
