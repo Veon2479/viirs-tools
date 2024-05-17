@@ -18,6 +18,7 @@ def _mono_window(bt, band_lambda, ndvi, cmask=None):
         bt: (np.ndarray|xr.Dataset): band at ~10-12 um in BT calibration
         band_lambda: (float) wavelength of emitted radiance in used band
             (the peak response or average of the limiting wavelength)
+            Unit is um
         ndvi: (np.ndarray|xr.Dataset): NDVI in corresponding resolution
         cmask: (np.ndarray|xr.Dataset, optional): integer cloud mask,
             1 is clear sky pixel
@@ -44,7 +45,7 @@ def _mono_window(bt, band_lambda, ndvi, cmask=None):
 
     p = 1.438e-2
 
-    lst = bt / (1 + (band_lambda*bt/p) * np.log(e_l))
+    lst = bt / (1 + (band_lambda*bt/p) * np.log(e_l) * 1e-12)
     if cmask is not None:
         lst = xr.where(cmask == 1, lst, nan)
     return lst
