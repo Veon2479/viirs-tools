@@ -23,7 +23,8 @@ def _water_bodies_day(ri1, ri2, ri3):
     """
     mask = xr.where(ri1 > ri2, 1, 0)
     mask = xr.where(ri2 > ri3, mask, 0)
-    mask = xr.where(ri1 is nan, nan, mask)
+    nanmask = Utils.nan_mask(ri1)
+    mask = xr.where(nanmask, nan, mask)
     return mask
 
 

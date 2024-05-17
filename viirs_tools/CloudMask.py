@@ -45,8 +45,8 @@ def _rsnpp_day_img(ri1, ri2, ri3, bi4, bi5):
     cm = xr.where(cm & t5, 0, 1)
     cm = xr.where(cm & t6, 0, 1)
 
-    cm = xr.where(ri1 is nan, nan, cm)
-
+    nanmask = Utils.nan_mask(ri1)
+    cm = xr.where(nanmask, nan, cm)
     return cm
 
 

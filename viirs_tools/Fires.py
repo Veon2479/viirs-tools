@@ -29,7 +29,7 @@ def _active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask=None):
     """
     ri12 = ri1 + ri2
     bi45 = bi4 - bi5
-    saturated_bi4 = xr.where(bi4 == 367)
+    saturated_bi4 = xr.where(bi4 == 367, 1, 0)
 
     # Fixed threshold tests:
     # night tests
@@ -68,23 +68,23 @@ def _active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask=None):
 
     # Candidate fire pixels:
     # night test
-    cnt = xr.where(bi4 > 295, 1, 0)
-    cnt = xr.where(bi45 > 10, 1, cnt)
-
-    # day test
-    cdt = xr.where(bi45 > 25, 1, 0)
-    M = Utils.median_values(bi4)
-    bi4m = xr.where(M > 325, M, 325)
-    bi4s = xr.where(bi4m < 330, bi4m, 330)
-    cdt = xr.where(bi4 > bi4s, 1, cdt)
+    # cnt = xr.where(bi4 > 295, 1, 0)
+    # cnt = xr.where(bi45 > 10, 1, cnt)
+    #
+    # # day test
+    # cdt = xr.where(bi45 > 25, 1, 0)
+    # M = Utils.median_values(bi4)
+    # bi4m = xr.where(M > 325, M, 325)
+    # bi4s = xr.where(bi4m < 330, bi4m, 330)
+    # cdt = xr.where(bi4 > bi4s, 1, cdt)
 
     # Results merging:
     # night
-    nt = nt0 + nt1 + nt2 + cnt
+    nt = nt0 + nt1 + nt2  # + cnt
     nt = xr.where(nt > 0, 1, 0)
 
     # day
-    dt = dt0 + dt1 + dt2 + cdt
+    dt = dt0 + dt1 + dt2  # + cdt
     dt = xr.where(dt > 0, 1, 0)
     dt = xr.where(ft == 1, 0, dt)
 
