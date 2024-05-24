@@ -61,6 +61,10 @@ The `viirs-tools` library provides the following core modules and their main fun
 You can find demo Qt6 app in the `viirs-demo` folder. Note that it requires additional packages to be installed installed - `rasterio`,  `matplotlib`,  `PyQt6` and `TensorFlow`. Run `viirs-demo.py` to start it. Data for this demo can be found in the `demo-data` folder.
 
 
+## Additional tools
+In the `scripts` folder you can find useful tools for local satellite data analysis, such `assimilate.py` script. It was used for gathering data in the `demo-data` folder.
+
+
 ## References
 [^1]: M.Piper, T.Bahr (2015). A RAPID CLOUD MASK ALGORITHM FOR SUOMI NPP VIIRS IMAGERY EDRS.
 
