@@ -49,14 +49,14 @@ def _active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask=None):
     dt1 = xr.where(bi45 < 0, 1, 0)
     dt1 = xr.where(bi5 > 325, dt1, 0)
 
-    # Potential background fires:
+    # Potential background fires (to be masked):
     # night tests
-    nt2 = xr.where(bi4 > 335, 1, 0)
-    nt2 = xr.where(bi4 > 30, nt2, 0)
+    nt2 = xr.where(bi4 > 335, 0, 1)
+    nt2 = xr.where(bi4 > 30, 0, nt2)
 
     # day tests
-    dt2 = xr.where(bi4 > 300, 1, 0)
-    dt2 = xr.where(bi45 > 10, dt2, 0)
+    dt2 = xr.where(bi4 > 300, 0, 1)
+    dt2 = xr.where(bi45 > 10, 0, dt2)
 
     # Bright fire-free targets (daytime only):
     ft = xr.where(ri12 > 60, 1, 0)
@@ -66,8 +66,8 @@ def _active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask=None):
     ft = xr.where(ri2 > 25, ft, 0)
     ft = xr.where(bi4 <= 235, ft, 0)
 
-    # Candidate fire pixels:
-    # night test
+    # # Candidate fire pixels:
+    # # night test
     # cnt = xr.where(bi4 > 295, 1, 0)
     # cnt = xr.where(bi45 > 10, 1, cnt)
     #
@@ -80,11 +80,11 @@ def _active_fires(ri1, ri2, ri3, bi4, bi5, nmask, cmask, wmask=None):
 
     # Results merging:
     # night
-    nt = nt0 + nt1 + nt2  # + cnt
+    nt = (nt0 + nt1) * nt2  # + cnt
     nt = xr.where(nt > 0, 1, 0)
 
     # day
-    dt = dt0 + dt1 + dt2  # + cdt
+    dt = (dt0 + dt1) * dt2  # + cdt
     dt = xr.where(dt > 0, 1, 0)
     dt = xr.where(ft == 1, 0, dt)
 

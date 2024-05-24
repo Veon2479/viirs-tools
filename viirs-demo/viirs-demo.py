@@ -227,7 +227,7 @@ class MainWindow(QtWidgets.QMainWindow):
         bi5, p = self.get_i5(root)
         ndvi = U.ndvi(ri2, ri1)
         lst = LST.mono_window_i05(bi5, ndvi)
-        self.render_raster(lst, 'LST (unmasked)', ts, p)
+        self.render_raster(lst, 'LST', ts, p)
     def handle_maskedMonoLstBtn(self):
         root, ts = self.get_raster_info()
         ri1, p = self.get_i1(root)
@@ -238,7 +238,7 @@ class MainWindow(QtWidgets.QMainWindow):
         ndvi = U.ndvi(ri2, ri1)
         cm = CM.rsnpp_day_img(ri1, ri2, ri3, bi4, bi5)
         lst = LST.mono_window_i05(bi5, ndvi, cmask=cm)
-        self.render_raster(lst, 'LST (masked)', ts, p)
+        self.render_raster(lst, 'LST', ts, p)
     def handle_activefireBtn(self):
         root, ts = self.get_raster_info()
         bi4, p = self.get_i4(root)

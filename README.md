@@ -31,14 +31,22 @@ The `viirs-tools` library provides the following core modules and their main fun
    + `rsnpp_day_img`: Day reflectance/thermal I-bands cloud test. [^1]
    + `fire_day_img`, `fire_night_img`: Day and night I-bands cloud tests used in the [^2].
 
-
 2. **NightMask**:
    + `naive`: Day/night mask, based on the difference between presence of reflectance and thermal data, for both I- and M-bands
 
-3. **Utils**:
+3. **Water**:
+   + `water_bodies_day`: Day reflectance tests for water bodies from [^2]
+
+4. **LST**:
+   + `mono_window_i05`, `mono_window_m16`, `mono_window_m15`: LST retrieval for I05 band, based on the LANDSAT-8 alg [^3]
+
+5. **Fires**:
+   + `active_fires`: Active fire detection from [^2]
+
+6. **Utils**:
    - Just some helpful functions
 
-4. **Assimilator** submodule:
+7. **Assimilator** submodule:
 	1. **Assimilator**:
 		- `assimilate`: Retrieving data from NASA archives using [cmrfetch](https://github.com/bmflynn/cmrfetch), with support for handy data collection process management
 	2. **Reading**
@@ -49,7 +57,13 @@ The `viirs-tools` library provides the following core modules and their main fun
 		- Contains some helper functions for reading files that aren't supported by `SatPy` module (some examples of using them in the previous module)
 
 
+## Demo
+You can find demo Qt6 app in the `viirs-demo` folder. Note that it requires additional packages to be installed installed - `rasterio`,  `matplotlib`,  `PyQt6` and `TensorFlow`. Run `viirs-demo.py` to start it. Data for this demo can be found in the `demo-data` folder.
+
+
 ## References
 [^1]: M.Piper, T.Bahr (2015). A RAPID CLOUD MASK ALGORITHM FOR SUOMI NPP VIIRS IMAGERY EDRS.
 
 [^2]: W.Schroeder, P.Oliva, L.Giglio, I.A.Csiszar (2014). The New VIIRS 375 m active fire detection data product: Algorithm description and initial assessment.
+
+[^3]: U.Avdan, G.Jovanovska (2016). Algorithm for Automated Mapping of Land Surface Temperature Using LANDSAT 8 Satellite Data
