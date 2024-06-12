@@ -1,5 +1,7 @@
 import os
-os.system('pyuic6 ./mainwindow.ui -o ./mainwindow.py')  # build ui
+os.system("pyuic6 ./mainwindow.ui -o ./mainwindow.py")  # build ui
+print('UI was built')
+
 
 import sys
 from PyQt6 import QtCore, QtWidgets, uic
@@ -7,16 +9,22 @@ from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import QSettings
 import mainwindow
 
+print("UI was setted up")
+
 import matplotlib
 matplotlib.use('QtAgg')
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+
+print("Plt is ready")
 
 import re
 from datetime import datetime
 import rasterio
 import numpy as np
 from math import nan
+
+print("System utils are done")
 
 import viirs_tools.NightMask as NM
 import viirs_tools.CloudMask as CM
@@ -25,9 +33,13 @@ import viirs_tools.LST as LST
 import viirs_tools.Water as W
 import viirs_tools.Utils as U
 
+print("viirs-tools are ready")
+
 # os.environ["CUDA_VISIBLE_DEVICES"] = "" # force use CPU by masking CUDA devices
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from tensorflow.keras.models import load_model
+
+print("Tf is done")
 
 model = load_model('./89-0.9206-0.1881-best_val_loss.model.keras')
 
