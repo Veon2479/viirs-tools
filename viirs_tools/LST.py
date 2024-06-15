@@ -26,7 +26,7 @@ def _mono_window(bt, band_lambda, ndvi, cmask=None):
         (np.ndarray, xr.Dataset): array containing LST,
             Can contain NaN values
     """
-    bt -= 273.15  # to Celsius
+    bt_c = bt - 273.15  # to Celsius
 
     ndvi_s = 0.2
     ndvi_v = 0.5
@@ -45,7 +45,7 @@ def _mono_window(bt, band_lambda, ndvi, cmask=None):
 
     p = 1.438e-2
 
-    lst = bt / (1 + (band_lambda*bt/p) * np.log(e_l) * 1e-12)
+    lst = bt_c / (1 + (band_lambda*bt_c/p) * np.log(e_l) * 1e-12)
     if cmask is not None:
         lst = xr.where(cmask == 1, lst, nan)
     return lst
@@ -208,7 +208,7 @@ def mono_window_i05_ds(ds, ndvi, cmask=None):
             "Incorrect input data format"
         )
     return mono_window_i05(
-        ds['I01'], ndvi,
+        ds['I05'], ndvi,
         cmask=cmask
     )
 
