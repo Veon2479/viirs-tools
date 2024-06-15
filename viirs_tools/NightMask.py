@@ -86,8 +86,8 @@ def naive_ds_img(ds):
             1 means night state, 0 means day state,
             Can contain NaN values in case of missing data in BT band
     """
-    rbands = ['I{}'.format(i) for i in range(1, 3 + 1)]
-    bbands = ['I{}'.format(i) for i in range(4, 5 + 1)]
+    rbands = ['I{:02d}'.format(i) for i in range(1, 3 + 1)]
+    bbands = ['I{:02d}'.format(i) for i in range(4, 5 + 1)]
     return _naive_ds(ds, rbands, bbands)
 
 
@@ -106,6 +106,6 @@ def naive_ds_mod(ds):
             1 means night state, 0 means day state,
             Can contain NaN values in case of missing data in BT band
     """
-    rbands = ['M{}'.format(i) for i in range(1, 11 + 1)]
-    bbands = ['M{}'.format(i) for i in range(12, 16 + 1)]
+    rbands = ['M{:02d}'.format(i) for i in range(1, 11 + 1)]
+    bbands = ['M{:02d}'.format(i) for i in range(12, 16 + 1)]
     return _naive_ds(ds, rbands, bbands)

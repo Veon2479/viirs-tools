@@ -14,7 +14,7 @@ setup(
     url='https://github.com/Veon2479/viirs-tools',
     license=license_text,
     author='Andrey Shuliak',
-    version='1.0.0',
+    version='1.0.1',
     packages=find_packages(),
     install_requires=[
         'xarray',
