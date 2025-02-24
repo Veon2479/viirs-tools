@@ -2,7 +2,7 @@ import numpy as np
 import xarray as xr
 
 from enum import Enum
-from typing import Any, TypeVar, Union
+from typing import Any, Union
 
 
 ArrayLike = Union[np.ndarray, xr.DataArray]
@@ -21,11 +21,7 @@ def _check_data(*args: Any):
     target_type = type(args[0])
     target_shape = args[0].shape
 
-    for arg in args[1:]:
-        if type(arg) is not target_type or arg.shape != target_shape:
-            return False
-
-    return True
+    return all(not (type(arg) is not target_type or arg.shape != target_shape) for arg in args[1:])
 
 
 class AlgEnum(Enum):
