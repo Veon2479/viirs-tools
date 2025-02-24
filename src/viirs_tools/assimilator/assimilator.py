@@ -6,34 +6,21 @@ from concurrent.futures import ProcessPoolExecutor
 
 def _test_cmrfetch():
     """
-        Test for availability of cmrfetch
-        Test was unsuccessfull in the case
-            of any exception
+    Test for availability of cmrfetch
+    Test was unsuccessfull in the case
+        of any exception
     """
-    cf = 'cmrfetch'
+    cf = "cmrfetch"
     try:
-        sp.run(
-            [cf, "--version"], check=True,
-            stdout=sp.DEVNULL, stderr=sp.DEVNULL
-        )
+        sp.run([cf, "--version"], check=True, stdout=sp.DEVNULL, stderr=sp.DEVNULL)
     except FileNotFoundError:
-        raise Exception(
-            f'{cf} is not accessible'
-        )
+        raise Exception(f"{cf} is not accessible")
     except sp.CalledProcessError as e:
         if e.returncode != 0:
-            raise Exception(
-                f"{cf} was found, failed to execute"
-            )
+            raise Exception(f"{cf} was found, failed to execute")
 
 
-def _get_data_for_interval(
-    path,
-    start_d, end_d,
-    names,
-    geobox,
-    dconc=4
-):
+def _get_data_for_interval(path, start_d, end_d, names, geobox, dconc=4):
     """
         Worker function for downloading data itself
     Args:
@@ -49,30 +36,33 @@ def _get_data_for_interval(
         dconc (int): number of concurrently
             downloading connections
     """
-    snames = ''
+    snames = ""
     for i in names:
-        snames += f'-s {i} '
+        snames += f"-s {i} "
     x = 1
     cnt = 0
-    while (x != 0):
-        # really robust solution, timeouts are handled by cmrfetch
+    while x != 0:
+        # really rough solution, timeouts are handled by cmrfetch
         # so they cannot be recognized as runtime error below
         # TODO: cmrfetch output analysis for re-downloading failed files
-        fetch_cli = f'cmrfetch granules {snames} -t {start_d},{end_d} --bounding-box {geobox} --download {path} --download-concurrency {dconc}'
+        fetch_cli = f"cmrfetch granules {snames} -t {start_d},{end_d} --bounding-box {geobox} --download {path} --download-concurrency {dconc}"
         r = sp.run(fetch_cli.split())
         x = r.returncode
         cnt += 1
-        if (cnt == 5):
-            raise RuntimeError(f'Cannot download data for {start_d},{end_d}')
+        if cnt == 5:
+            raise RuntimeError(f"Cannot download data for {start_d},{end_d}")
 
 
 def assimilate(
-    names, geobox,
-    start_d, end_d,
+    names,
+    geobox,
+    start_d,
+    end_d,
     path,
-    workers, max_queue=0,
+    workers,
+    max_queue=0,
     assim_callback=(lambda path: None),
-    dconc=4
+    dconc=4,
 ):
     """
         Performs data assimilation - download it using cmrfetch
@@ -100,28 +90,22 @@ def assimilate(
     """
     _test_cmrfetch()
 
-    if (max_queue == 0):
+    if max_queue == 0:
         max_queue = 2 * workers
 
-    if (not os.path.exists(path)):
+    if not os.path.exists(path):
         os.mkdir(path)
 
     with ProcessPoolExecutor(max_workers=workers) as executor:
         futures = []
         cur_d = end_d
         next_d = end_d + timedelta(days=1)
-        while (cur_d >= start_d):
-            cur_d_s = cur_d.strftime('%Y-%m-%d')
-            next_d_s = next_d.strftime('%Y-%m-%d')
-            step_path = os.path.join(path, f'{cur_d_s}')
+        while cur_d >= start_d:
+            cur_d_s = cur_d.strftime("%Y-%m-%d")
+            next_d_s = next_d.strftime("%Y-%m-%d")
+            step_path = os.path.join(path, f"{cur_d_s}")
 
-            _get_data_for_interval(
-                step_path,
-                cur_d_s, next_d_s,
-                names,
-                geobox,
-                dconc
-            )
+            _get_data_for_interval(step_path, cur_d_s, next_d_s, names, geobox, dconc)
 
             task = executor.submit(assim_callback, step_path)
             futures.append(task)
@@ -130,8 +114,8 @@ def assimilate(
             cur_d -= timedelta(days=1)
 
             # Throttling data downloading
-            if (len(futures) > max_queue):
-                while (len(futures) > max_queue):
+            if len(futures) > max_queue:
+                while len(futures) > max_queue:
                     futures = [f for f in futures if not f.done()]
-                    if (len(futures) != 0):
+                    if len(futures) != 0:
                         futures[0].result()
