@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "viirs-tools"
+dynamic = ["version"]
+description = "Python library for processing VIIRS data"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+keywords = ["viirs", "satellite", "remote sensing", "meteorology"]
+authors = [
+  { name = "Andrey Shuliak", email = "andriei.shuliak@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Topic :: Scientific/Engineering :: Atmospheric Science"
+]
+dependencies = ["xarray"]
+
+[project.optional-dependencies]
+assimilator = ["netcdf4"]
+all = ["viirs-tools[assimilator]"]
+
+[project.urls]
+Documentation = "https://github.com/Veon2479/viirs-tools#readme"
+Issues = "https://github.com/Veon2479/viirs-tools/issues"
+Source = "https://github.com/Veon2479/viirs-tools"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/viirs_tools tests}"
+
+[tool.hatch.version]
+path = "src/viirs_tools/__version__.py"
+
+[tool.coverage.run]
+source_pkgs = ["viirs_tools", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/viirs_tools/__about__.py",
+]
+
+[tool.coverage.paths]
+viirs_tools = ["src/viirs_tools", "*/viirs-tools/src/viirs_tools"]
+tests = ["tests", "*/viirs-tools/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.ruff]
+ignore = ["T201", "PLR2004", "EXE002", "TRY002", "EM102", "FA100", "ARG005", "TRY003", "S605", "SLF001"]
+line-length = 140
+
+[tool.flake8]
+max-line-length = 140
+
