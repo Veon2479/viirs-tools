@@ -1,7 +1,13 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from netCDF4 import Dataset  # require netcdf4 being installed, not NetCDF4
-from numpy import ma
 
 from viirs_tools.assimilator import reading_helpers as rh
+
+if TYPE_CHECKING:
+    from numpy import ma
 
 
 def read_npp_viaes_l1(path: str) -> dict[str, ma.MaskedArray]:

@@ -1,6 +1,12 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import numpy as np
-from netCDF4 import Dataset  # require netcdf4 being installed, not NetCDF4
 from numpy import ma
+
+if TYPE_CHECKING:
+    from netCDF4 import Dataset
 
 
 def _get_masked(data: np.ndarray, thr: float) -> ma.MaskedArray:
