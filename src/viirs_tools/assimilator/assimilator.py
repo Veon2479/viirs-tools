@@ -1,8 +1,13 @@
+from __future__ import annotations
+
 import os
 import subprocess as sp
-from collections.abc import Callable
 from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime, timedelta
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from types import FunctionType
 
 
 def _test_cmrfetch():
@@ -76,7 +81,7 @@ def assimilate(
     path: str,
     workers: int,
     max_queue: int = 0,
-    assim_callback: Callable[[str], None] = (lambda path: None),
+    assim_callback: FunctionType[[str], None] = (lambda path: None),
     dconc: int = 4,
 ):
     """Performs data assimilation - download it using cmrfetch

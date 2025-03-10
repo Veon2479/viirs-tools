@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 from enum import Enum
-from typing import Any
+from typing import Any, Union
 
 import numpy as np
 import xarray as xr
 
-ArrayLike = np.ndarray | xr.DataArray
+ArrayLike = Union[np.ndarray, xr.DataArray]
 
 
 def _check_data(*args: Any):

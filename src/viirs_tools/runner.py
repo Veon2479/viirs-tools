@@ -1,9 +1,13 @@
-from collections.abc import Callable
-from enum import Enum
-from types import MappingProxyType
+from __future__ import annotations
+
+from types import FunctionType, MappingProxyType
+from typing import TYPE_CHECKING
 
 from viirs_tools.algs import cloud, index, lst, night, utils, water
 from viirs_tools.utils.types import AlgEnum
+
+if TYPE_CHECKING:
+    from enum import Enum
 
 
 class AlgsCloud(AlgEnum):
@@ -69,7 +73,7 @@ class Runner:
     def __init__(self):
         pass
 
-    def _show_algs(self, algs: dict[Enum, Callable]):
+    def _show_algs(self, algs: dict[Enum, FunctionType]):
         print("<Key>: <Description>")
         for item in algs.items():
             print(item)
@@ -97,25 +101,25 @@ class Runner:
             self._show_algs(impl)
             print()
 
-    def _get_alg(self, impls, algs, alg=None) -> Callable:
+    def _get_alg(self, impls, algs, alg=None) -> FunctionType:
         if alg is None:
             alg = next(iter(algs))
         return impls[alg]
 
-    def get_alg_index(self, alg: AlgsIndex | None = None) -> Callable:
+    def get_alg_index(self, alg: AlgsIndex | None = None) -> FunctionType:
         return self._get_alg(Runner._IMPL_AlgsIndex, AlgsIndex, alg=alg)
 
-    def get_alg_night(self, alg: AlgsNight | None = None) -> Callable:
+    def get_alg_night(self, alg: AlgsNight | None = None) -> FunctionType:
         return self._get_alg(Runner._IMPL_AlgsNight, AlgsNight, alg=alg)
 
-    def get_alg_cloud(self, alg: AlgsCloud | None = None) -> Callable:
+    def get_alg_cloud(self, alg: AlgsCloud | None = None) -> FunctionType:
         return self._get_alg(Runner._IMPL_AlgsCloud, AlgsCloud, alg=alg)
 
-    def get_alg_lst(self, alg: AlgsLST | None = None) -> Callable:
+    def get_alg_lst(self, alg: AlgsLST | None = None) -> FunctionType:
         return self._get_alg(Runner._IMPL_AlgsLST, AlgsLST, alg=alg)
 
-    def get_alg_water(self, alg: AlgsWater | None = None) -> Callable:
+    def get_alg_water(self, alg: AlgsWater | None = None) -> FunctionType:
         return self._get_alg(Runner._IMPL_AlgsWater, AlgsWater, alg=alg)
 
-    def get_alg_utils(self, alg: AlgsUtils | None = None) -> Callable:
+    def get_alg_utils(self, alg: AlgsUtils | None = None) -> FunctionType:
         return self._get_alg(Runner._IMPL_AlgsUtils, AlgsUtils, alg=alg)

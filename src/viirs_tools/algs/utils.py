@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import xarray as xr
 
 from viirs_tools.utils.types import ArrayLike, _check_data

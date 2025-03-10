@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from tests.algs.utils import IMAGE_SHAPE, get_data_np, get_data_xr
 from viirs_tools.algs import index, lst
 

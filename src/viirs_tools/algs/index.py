@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from viirs_tools.utils.types import ArrayLike, _check_data
 
 
