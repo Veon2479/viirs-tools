@@ -26,7 +26,7 @@ classifiers = [
   "License :: OSI Approved :: Apache Software License",
   "Topic :: Scientific/Engineering :: Atmospheric Science"
 ]
-dependencies = ["xarray"]
+dependencies = ["xarray>=2024.11.0"]
 
 [project.optional-dependencies]
 assimilator = ["netcdf4"]
