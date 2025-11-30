@@ -71,8 +71,8 @@ class Runner:
 
     def _show_algs(self, algs: dict[Enum, Callable]):
         print("<Key>: <Description>")
-        for item in algs.items():
-            print(item)
+        for item in algs.keys():
+            print(item.value)
 
     def show_algs_index(self):
         self._show_algs(Runner._IMPL_AlgsIndex)

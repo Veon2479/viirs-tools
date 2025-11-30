@@ -33,30 +33,24 @@ def vibcm_day(
 
     # Test 1
     cm = xr.where(ri1 > 8, True, False)
-    print(cm)
 
     # Test 2
     mask = index.ndsi(ri1, ri3) > 0.7 if ndsi is None else ndsi > 0.7
     mask = xr.where(ri2 > 11, mask, False)
     cm = xr.where(mask, cm, False)
-    print(cm)
 
     # Test 3
     cm = xr.where(bi5 < 300, cm, False)
-    print(cm)
 
     # Test 4
     ri3_max = np.nanmax(ri3, axis=(-2, -1), keepdims=True)
     cm = xr.where((ri3_max - ri3) * bi5 / 100 < 410, cm, False)
-    print(cm)
 
     # Test 5
     cm = xr.where(ri2 / ri1 < 2, cm, False)
-    print(cm)
 
     # Test 6
     cm = xr.where(ri2 / ri3 > 1, cm, False)
-    print(cm)
 
     return 1 - xr.where(xr.ufuncs.isnan(ri1), np.nan, cm)
 
