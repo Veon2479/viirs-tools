@@ -65,7 +65,7 @@ exclude_lines = [
 ]
 
 [tool.ruff]
-ignore = ["T201", "PLR2004", "EXE002", "TRY002", "EM102", "FA100", "ARG005", "TRY003", "S605", "SLF001"]
+lint.ignore = ["T201", "PLR2004", "EXE002", "TRY002", "EM102", "FA100", "ARG005", "TRY003", "S605", "SLF001"]
 line-length = 140
 
 [tool.flake8]
