@@ -6,11 +6,7 @@ from viirs_tools.utils.types import ArrayLike, _check_data
 
 
 def vibcm_day(
-    ri1: ArrayLike,
-    ri2: ArrayLike,
-    ri3: ArrayLike,
-    bi5: ArrayLike,
-    ndsi: ArrayLike | None = None,
+    ri1: ArrayLike, ri2: ArrayLike, ri3: ArrayLike, bi5: ArrayLike, ndsi: ArrayLike | None = None, *, use_alt_thresholds: bool = False
 ) -> ArrayLike:
     """Day reflectance/thermal I-bands cloud test
     Based on the M.Piper, T.Bahr (2015).
@@ -21,6 +17,7 @@ def vibcm_day(
         ri2 : I02 in reflectance calibration
         ri3 : I03 in reflectance calibration
         bi5 : I05 in BT calibration
+        use_alt_thresholds : flag to use alternative threshold values for tests
 
     Returns:
         Integer cloud mask, 0 is cloud, 1 is clear pixel
@@ -35,16 +32,18 @@ def vibcm_day(
     cm = xr.where(ri1 > 8, True, False)
 
     # Test 2
-    mask = index.ndsi(ri1, ri3) > 0.7 if ndsi is None else ndsi > 0.7
-    mask = xr.where(ri2 > 11, mask, False)
-    cm = xr.where(mask, cm, False)
+    snow_mask = index.ndsi(ri1, ri3) > 0.7 if ndsi is None else ndsi > 0.7
+    mask = xr.where(ri2 > 11, snow_mask, False)
+    cm = xr.where(mask, cm, xr.where(snow_mask, False, cm))
 
     # Test 3
-    cm = xr.where(bi5 < 300, cm, False)
+    t3_thr = 300 if use_alt_thresholds else 312
+    cm = xr.where(bi5 < t3_thr, cm, False)
 
     # Test 4
+    t4_thr = 225 if use_alt_thresholds else 410
     ri3_max = np.nanmax(ri3, axis=(-2, -1), keepdims=True)
-    cm = xr.where((ri3_max - ri3) * bi5 / 100 < 410, cm, False)
+    cm = xr.where((ri3_max - ri3) * bi5 / 100 < t4_thr, cm, False)
 
     # Test 5
     cm = xr.where(ri2 / ri1 < 2, cm, False)
